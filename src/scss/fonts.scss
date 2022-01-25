@@ -1,0 +1,6 @@
+@include fontCreate("Blackthorns-Demo",     900, "../fonts/Blackthorns-Demo-Black");
+@include fontCreate("MonumentExtended",     400, "../fonts/Monument-Extended-Regular");
+@include fontCreate("MonumentExtended",     800, "../fonts/Monument-Extended-Ultrabold");
+@include fontCreate("PlusJakarta",          400, "../fonts/PlusJakartaDisplay-Regular", false);
+@include fontCreate("PlusJakarta",          500, "../fonts/PlusJakartaDisplay-Medium", false);
+@include fontCreate("PlusJakarta",          700, "../fonts/PlusJakartaDisplay-Bold", false);

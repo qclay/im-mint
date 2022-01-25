@@ -1,0 +1,10 @@
+{
+    "min_value": 1,
+    "max_value": 1,
+    "publicSale": 2,
+    "whitelist": 2,
+    "init_value": 1,
+    "step": 1,
+    "picture": "/avatar.png",
+    "smooth": true
+}

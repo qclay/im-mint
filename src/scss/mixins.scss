@@ -1,0 +1,53 @@
+@mixin fontCreate($name, $weight, $url, $ttf: true, $style: normal) {
+    @font-face {
+        font-family: $name;
+        font-weight: $weight;
+        font-style: $style;        
+        @if $ttf {
+            src: url("#{$url}.woff2") format("woff2"),
+                 url("#{$url}.woff") format("woff"),
+                 url("#{$url}.ttf") format("truetype"),
+                 url("#{$url}.eot") format("embedded-opentype");    
+        } @else {
+            src: url("#{$url}.woff2") format("woff2"),
+                 url("#{$url}.woff") format("woff"),
+                 url("#{$url}.otf") format("opentype"),
+                 url("#{$url}.eot") format("embedded-opentype");    
+        }
+    }
+}
+
+@function calcSize($size, $per){
+    @return $size * ($per / 100);
+}
+
+@mixin archivo($weight: 900){
+    font-family: "Archivo", sans-serif;
+    font-weight: $weight;
+    @content;
+}
+@mixin blackthorns($weight: 900){
+    font-family: "Blackthorns-Demo", sans-serif;
+    font-weight: $weight;
+    @content;
+}
+@mixin monument($weight: 400){
+    font-family: "MonumentExtended", sans-serif;
+    font-weight: $weight;
+    @content;
+}
+@mixin mazzard($weight: 400){
+    font-family: "Mazzard", sans-serif;
+    font-weight: $weight;
+    @content;
+}
+@mixin neutron($weight: 400){
+    font-family: "NeutronDance-Super-Italic", sans-serif;
+    font-weight: $weight;
+    @content;
+}
+@mixin jakarta($weight: 400){
+    font-family: "PlusJakarta", sans-serif;
+    font-weight: $weight;
+    @content;
+}
