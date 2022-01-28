@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {getData} from "../../javascript/utils";
 import PlusButton from '../PlusButton/PlusButton';
 import classNames from 'classnames';
-import Range from '../Range/Range';
 import "./mintworkspace.scss";
 
-// Others
 import { useEthers } from "@usedapp/core";
 import { useContractMethod } from "../../hooks";
 import { utils } from "ethers";
@@ -33,7 +31,6 @@ export default function(){
         smooth: false
     });
 
-    // Others    
     const { account, chainId, deactivate } = useEthers();
     const { state: mintStateWhitelistedFF, send: mintWhitelistedFF } = useContractMethod("mintWhitelistedFF");
     const { state: mintStateWhitelisted, send: mintWhitelisted } = useContractMethod("mintWhitelisted");
@@ -46,16 +43,14 @@ export default function(){
     async function handleSetCountMintButtonClick() {
         const _count = parseInt(value);    
 
-        setTimeout(() => {   
-            console.log("_count: ", _count);
-            console.log("mintStateWhitelistedFF: ", mintStateWhitelistedFF)
-            console.log("mintStateWhitelisted: ", mintStateWhitelisted)
-            console.log("mintStatePublicSale: ", mintStatePublicSale)
-            console.log("onlyWhitelistedFF: ", onlyWhitelistedFF)
-            console.log("onlyWhitelisted: ", onlyWhitelisted)
-            console.log("onlyPublicSale: ", onlyPublicSale)
-        }, 1000)
-    
+        console.log("_count: ", _count);
+        console.log("mintStateWhitelistedFF: ", mintStateWhitelistedFF)
+        console.log("mintStateWhitelisted: ", mintStateWhitelisted)
+        console.log("mintStatePublicSale: ", mintStatePublicSale)
+        console.log("onlyWhitelistedFF: ", onlyWhitelistedFF)
+        console.log("onlyWhitelisted: ", onlyWhitelisted)
+        console.log("onlyPublicSale: ", onlyPublicSale)
+
         if (onlyWhitelistedFF) {
           //merkle
           const leafNodes = whitelistHashedAddresses.map((leafJson) => Buffer.from(leafJson, "hex"));
@@ -92,8 +87,6 @@ export default function(){
           }
         }
     }
-
-    // End others 
 
     const strFixed = String(config.step).split(".")[1]?.length || 0;
 
