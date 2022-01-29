@@ -1,7 +1,7 @@
 import React from "react";
 
 export const value = {
-    openMenu: false
+    showAccountInfoModal: true
 };
 
 export const Context = React.createContext({});

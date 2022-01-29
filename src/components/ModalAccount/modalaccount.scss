@@ -1,0 +1,281 @@
+@import "../../scss/mixins.scss";
+
+.modalaccount{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 9999;
+    background: rgba(4, 4, 4, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity .75s ease-in-out;
+
+    &.visible{        
+        opacity: 1;
+    }
+}
+
+.modalaccount__container{
+    max-width: 515px;
+    width: 100%;
+    padding: 8.5px 15px;
+    position: relative;
+}
+
+.modalaccount__rhombus{
+    position: absolute;
+    width: 8px;
+    height: 5px;
+
+    &_1{
+        top: 0;
+        left: 0;
+    }
+    &_2{
+        top: 0;
+        right: 0;
+    }
+    &_3{
+        bottom: 0;
+        left: 0;
+    }
+    &_4{
+        bottom: 0;
+        right: 0;
+    }
+}
+.modalaccount__corner{
+    position: absolute;
+    max-width: 16px;
+    height: 16px;
+    z-index: 3;
+
+    &_1{
+        top: 2.5px;
+        left: 3.5px;
+    }
+    &_2{
+        top: 2.5px;
+        right: 3.5px;
+        transform: rotate(90deg);
+    }
+    &_3{
+        bottom: 2.5px;
+        left: 3.5px;
+        transform: rotate(-90deg);
+    }
+    &_4{
+        bottom: 2.5px;
+        right: 3.5px;
+        transform: rotate(180deg);
+    }
+}
+
+
+:root{
+    --angle: 5px;
+}
+
+@mixin clipPathBorder($angle: 0) {
+    clip-path: polygon($angle 0, calc(100% - $angle) 0, 100% $angle, 100% calc(100% - $angle), calc(100% - $angle) 100%, $angle 100%, 0 calc(100% - $angle), 0 $angle);   
+}
+.modalaccount__wrapper{    
+    width: 100%;
+    height: 312px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+    @include clipPathBorder(var(--angle));
+    background: #fff;    
+    overflow: hidden;
+}
+.modalaccount__content{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.modalaccount__main{
+    padding: 20px 30px 14px;
+}
+.modalaccount__header{
+    padding-left: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h2{
+        @include monument(400);
+        font-size: 13px;
+        color: #000000;
+    }
+    button{
+        max-width: 14px;
+        max-height: 14px;
+        transition: transform .15s ease-in-out;
+
+        img{
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        &:hover{
+            transform: scale(1.2);
+        }
+    }
+}
+.modalaccount__body{
+    margin-top: 13px;
+    position: relative;
+    padding: 16px;
+    padding-top: 9px;
+
+    .modalaccount__borderimg{
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: -1;
+        width: 100%;    
+        height: 100%;
+    }
+}
+.modalaccount__connection{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    span{
+        @include jakarta(500);
+        font-size: 15px;
+
+        color: rgba(0, 0, 0, 0.5);
+    }
+    button{
+        padding: 7px 21.5px;
+        border: 2px solid #FF0000;
+        border-radius: 9px;
+
+        @include jakarta(500);
+        font-size: 11.4336px;
+        letter-spacing: 0.04em;
+
+        color: #FF0000;
+
+        transition: background .2s ease-in-out, color .2s ease-in-out;
+
+        &:hover{
+            background: #FF0000;
+            color: #FFF;
+        }
+    }
+}
+.modalaccount__wallet{
+    margin-top: 17px;
+    display: flex;
+    align-items: center;
+
+    &::before{
+        content: "";
+        display: block;
+        width: 18px;
+        height: 18px;
+        background: #BFBFBF;
+        border-radius: 50%;
+    }
+    span{
+        margin-left: 5px;
+        @include jakarta(400);
+        font-size: 13px;
+        color: #000000;
+    }
+    img{
+        margin-left: 5px;
+        max-width: 14px;
+        max-height: 14px;
+    }
+
+    &:hover{
+        span{
+            text-decoration: underline;
+        }
+    }
+}
+
+.modalaccount__info{
+    margin-top: 9px;
+
+    li{
+        @include jakarta(500);
+        font-size: 13px;
+        line-height: 1.38;
+
+        color: #000000;
+    }
+}
+
+.modalaccount-transactions{
+    background: #FFA133;
+    flex-grow: 1;
+    padding: 15px 30px;
+}
+.modalaccount-transactions__title{
+    @include monument(400);
+    font-size: 13px;
+
+    color: rgba(0, 0, 0, 0.5);
+}
+.modalaccount-transactions__list{
+    margin-top: 13px;
+    max-height: 125px;
+    overflow: hidden auto;
+}
+
+.modalaccount-transactions__no-transactions{
+    @include jakarta(500);
+    font-size: 13px;
+    color: #000;
+}
+.modalaccount-transactions__item{
+    display: flex;
+    align-items: center;
+
+    .mt-icon{
+        display: block;
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img{
+            max-width: 80%;
+        }
+    }
+    .mt-link{
+        margin-left: 14px;
+        display: flex;
+        align-items: center;
+
+        span{
+            @include jakarta(500);
+            font-size: 13px;
+            color: #000;
+        }
+        img{
+            transform: translateY(2px);
+            margin-left: 6px;
+            max-width: 14px;
+            max-height: 14px;
+        }
+    }
+    .mt-date{
+        margin-left: 19px;
+    }
+}

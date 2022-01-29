@@ -2,8 +2,7 @@ import { ethers } from "ethers";
 import { Contract } from "@ethersproject/contracts";
 import { useContractCall, useContractFunction } from "@usedapp/core";
 import contractAbi from "../contracts/contractAbi.json";
-import { rinkebyAddress as contractAddress } from "../contracts/config";
-
+import { rinkebyAddress as contractAddress } from "../contracts/config.json";
 
 const simpleContractInterface = new ethers.utils.Interface(contractAbi);
 const contract = new Contract(contractAddress, simpleContractInterface);

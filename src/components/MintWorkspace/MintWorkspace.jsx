@@ -7,12 +7,9 @@ import "./mintworkspace.scss";
 import { useEthers } from "@usedapp/core";
 import { useContractMethod } from "../../hooks";
 import { utils } from "ethers";
-import { presaleFFTokenPrice, presaleTokenPrice, tokenPrice } from "../../contracts/config"
 import { useOnlyWhitelistedFF, useOnlyWhitelisted, useOnlyPublicSale } from "../../hooks";
 import MerkleTree from "merkletreejs";
 import keccak256 from "keccak256";
-import { whitelistHashedAddresses } from "../../contracts/config";
-
 
 // Images
 import workspaceBackground from '../../images/workspace-background.png';
@@ -21,17 +18,19 @@ import workspaceBackgroundMobile from '../../images/workspace-background@mobile.
 export default function(){
     const [value, setValue] = useState(1);
     const [config, setConfig] = useState({
-        min_value: 0,
-        max_value: 0,
-        init_value: 0,
         publicSale: 0,
         whitelist: 0,
-        step: 0,
-        picture: null,
-        smooth: false
+        whitelistFF: 0,
+        rinkebyAddress: "",
+        maxSupply: 0,
+        whitelistHashedAddresses: [],
+        tokenPrice: 0.00,
+        presaleTokenPrice: 0.00,
+        presaleFFTokenPrice: 0.00,
+        max_value: 0
     });
 
-    const { account, chainId, deactivate } = useEthers();
+    const { account, chainId } = useEthers();
     const { state: mintStateWhitelistedFF, send: mintWhitelistedFF } = useContractMethod("mintWhitelistedFF");
     const { state: mintStateWhitelisted, send: mintWhitelisted } = useContractMethod("mintWhitelisted");
     const { state: mintStatePublicSale, send: mintPublicSale } = useContractMethod("mintPublicSale");
@@ -53,28 +52,28 @@ export default function(){
 
         if (onlyWhitelistedFF) {
           //merkle
-          const leafNodes = whitelistHashedAddresses.map((leafJson) => Buffer.from(leafJson, "hex"));
+          const leafNodes = config.whitelistHashedAddresses.map((leafJson) => Buffer.from(leafJson, "hex"));
           const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
           const addr = account
           const hexProof = merkleTree.getHexProof(keccak256(addr));
     
           if (_count) {
             mintWhitelistedFF(_count, hexProof, {
-              value: utils.parseEther((presaleFFTokenPrice * value).toString()),
+              value: utils.parseEther((config.presaleFFTokenPrice * value).toString()),
             }); //calling the mint here! arguments and a config object at end for value wow read comments here https://dev.to/jacobedawson/send-react-web3-dapp-transactions-via-metamask-2b8n
           }
         }
     
         if (onlyWhitelisted) {
           //merkle
-          const leafNodes = whitelistHashedAddresses.map((leafJson) => Buffer.from(leafJson, "hex"));
+          const leafNodes = config.whitelistHashedAddresses.map((leafJson) => Buffer.from(leafJson, "hex"));
           const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
           const addr = account
           const hexProof = merkleTree.getHexProof(keccak256(addr));
     
           if (_count) {
             mintWhitelisted(_count, hexProof, {
-              value: utils.parseEther((presaleTokenPrice * value).toString()),
+              value: utils.parseEther((config.presaleTokenPrice * value).toString()),
             }); //calling the mint here! arguments and a config object at end for value wow read comments here https://dev.to/jacobedawson/send-react-web3-dapp-transactions-via-metamask-2b8n
           }
         }
@@ -82,29 +81,31 @@ export default function(){
         if (onlyPublicSale) {
           if (_count) {
             mintPublicSale(_count, {
-              value: utils.parseEther((tokenPrice * value).toString()),
+              value: utils.parseEther((config.tokenPrice * value).toString()),
             }); //calling the mint here! arguments and a config object at end for value wow read comments here https://dev.to/jacobedawson/send-react-web3-dapp-transactions-via-metamask-2b8n
           }
         }
     }
 
-    const strFixed = String(config.step).split(".")[1]?.length || 0;
-
     const addClickHandler = () => {
-        setValue(Number(Math.min(config.max_value, value + config.step).toFixed(strFixed)));
+        setValue(
+            Math.min(value + 1, config.max_value)
+        );
     };
 
     const minusClickHandler = () => {
-        setValue(Number(Math.max(config.min_value, value - config.step).toFixed(strFixed)));
+        setValue(
+            Math.max(1, value - 1)
+        );
     };
-
-    useEffect(() => {
-        
-    }, [config]);
 
     useEffect(async () => {
         const data = await getData("./config.json");
-        const max_value = onlyWhitelisted ? data.whitelist : data.publicSale;
+        const max_value = onlyPublicSale 
+            ? data.publicSale 
+            : (onlyWhitelisted ? data.whitelistFF : data.whitelist);
+
+        console.log(max_value)
 
         setConfig({
             ...data,
@@ -131,7 +132,7 @@ export default function(){
                                 onClick={addClickHandler}
                             ></button>
                             <button 
-                                className={classNames("mintworkspace__controls-btn minus", { disabled: config.min_value === value})} 
+                                className={classNames("mintworkspace__controls-btn minus", { disabled: value === 1})} 
                                 onClick={minusClickHandler}
                             ></button>
                         </div>

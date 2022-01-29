@@ -1,6 +1,0 @@
-export const rinkebyAddress = "0x24D5b65C9c5C5E6aD290E84eA845f826ec432039";
-export const maxSupply = 9999;
-export const whitelistHashedAddresses = ["32efcb9a43a6ef4c48279080d16a7a3106111a4298eb54beaab38c979520b2f6","66e3116dd175595ca005dffb53ae3b33b121ede3fb5ad8240f2052fb9e4e76fe","02b912ea3dcc04ff003679a70908cac751bf46864fb0039e68f07dcb4877adf2","7389e2264872a813e7bbeaffe853e88304b50a68c9677e5a74afa226523a60b2","b3866df0808ac9d95e06e2be8536b339245141ab0958f1e13061f7ae6621d493","31db307e5cff19379c4d177bfc7096a2fa25c5bb3ab3db971740f49bd36b3807","f5a15836e8680ba4a5069f619f84f86e679f3c94f43241a1bfe1be13dd3a7771","dba78d4c410b4f8bde58ff910ca8e72682a63af494608a7dd303ce02a4a33e50"];
-export const tokenPrice = 0.15;
-export const presaleTokenPrice = 0.10;
-export const presaleFFTokenPrice = 0.00;
