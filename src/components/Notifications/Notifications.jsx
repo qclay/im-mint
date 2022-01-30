@@ -50,7 +50,7 @@ export default function(){
                     title="Transaction Started"
                     transaction={`https://rinkeby.etherscan.io/tx/${ctx[typeTransaction].transaction.hash}`}
                     id={null}
-                    costs={costs}
+                    costs={}
                     icon={clockIcon}
                 />
             )}
@@ -59,7 +59,7 @@ export default function(){
                     title="Transaction Succeeded"
                     transaction={`https://rinkeby.etherscan.io/tx/${ctx[typeTransaction].receipt.transactionHash}`}
                     id={ctx[typeTransaction].receipt.transactionIndex}
-                    costs={costs}
+                    costs={}
                     icon={successIcon}
                 />
             )}
