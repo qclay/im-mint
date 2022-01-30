@@ -80,6 +80,20 @@
     }
 }
 
+.nf__connect{
+    min-height: 78px;
+    @include jakarta(500);
+    font-size: 16px;
+
+    .nf__title{
+        color: #FFA133;
+    }
+    .nf__p{
+        margin-top: 2px;
+        color: #fff;
+    }
+}
+
 @keyframes toBottom {
     0%{
         transform: translateY(-100%);

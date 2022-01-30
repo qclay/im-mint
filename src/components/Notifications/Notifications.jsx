@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useOnlyWhitelistedFF, useOnlyWhitelisted, useOnlyPublicSale } from "../../hooks";
 import { useContext } from 'react';
 import { Context } from '../../Context';
-import { useEthers } from '@usedapp/core';
+import { useEthers, useNotifications } from '@usedapp/core';
 import { getData } from '../../javascript/utils';
 import NotificationBlock from './NotificationBlock/NotificationBlock';
 import "./notifications.scss"
@@ -11,6 +11,7 @@ import "./notifications.scss"
 import clockIcon from '../../images/clock-icon.png';
 import successIcon from '../../images/success-icon.png';
 import failIcon from '../../images/fail-icon.png';
+import connectedIcon from '../../images/connected-icon.png';
 
 export default function(){
     const [ctx, setCtx] = useContext(Context);
@@ -18,6 +19,7 @@ export default function(){
     const [typeTransaction, setTypeTransaction] = useState(null);
     const [costs, setCosts] = useState(0);
     const {account} = useEthers();
+    const {notifications} = useNotifications();
 
     const onlyWhitelistedFF = useOnlyWhitelistedFF(account);
     const onlyWhitelisted = useOnlyWhitelisted(account);
@@ -45,33 +47,37 @@ export default function(){
     
     return typeTransaction ? (
         <div className="notification">
-            {ctx[typeTransaction].status === "Mining" && (
-                <NotificationBlock 
-                    title="Transaction Started"
-                    transaction={`https://rinkeby.etherscan.io/tx/${ctx[typeTransaction].transaction.hash}`}
-                    id={null}
-                    costs={costs}
-                    icon={clockIcon}
-                />
-            )}
-            {ctx[typeTransaction].status === "Success" && (
-                <NotificationBlock 
-                    title="Transaction Succeeded"
-                    transaction={`https://rinkeby.etherscan.io/tx/${ctx[typeTransaction].receipt.transactionHash}`}
-                    id={ctx[typeTransaction].receipt.transactionIndex}
-                    costs={costs}
-                    icon={successIcon}
-                />
-            )}
-            {ctx[typeTransaction].status === "Exception" && ctx[typeTransaction].transaction && (
-                <NotificationBlock 
-                    title="Transaction Failed"
-                    id={null}
-                    costs={costs}
-                    transaction={ctx[typeTransaction].transaction.hash}
-                    icon={failIcon}
-                />
-            )}
+            {notifications.map(nf => (<>
+
+                {nf.type === 'walletConnected' && (
+                    <NotificationBlock
+                        icon={connectedIcon}
+                        className="nf__connect"
+                    >
+                        <h3 className="nf__title">Success</h3>
+                        <p className="nf__p">Wallet connected</p>
+                    </NotificationBlock>
+                )}
+                {nf.type === "transactionStarted" && (
+                    <NotificationBlock 
+                        title="Transaction Started"
+                        transaction={`https://rinkeby.etherscan.io/tx/${nf.transaction.hash}`}
+                        id={null}
+                        costs={costs}
+                        icon={clockIcon}
+                    />
+                )}
+                {nf.type === "transactionSucceed" && (
+                    <NotificationBlock 
+                        title="Transaction Succeeded"
+                        transaction={`https://rinkeby.etherscan.io/tx/${nf.receipt.transactionHash}`}
+                        id={nf.receipt.transactionIndex}
+                        costs={costs}
+                        icon={successIcon}
+                    />
+                )}
+
+            </>))}
         </div>
     ) : null;
 }
