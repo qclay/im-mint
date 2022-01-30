@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useOnlyWhitelistedFF, useOnlyWhitelisted, useOnlyPublicSale } from "../../hooks";
-import { useContext } from 'react';
-import { Context } from '../../Context';
 import { useEthers, useNotifications } from '@usedapp/core';
 import { getData } from '../../javascript/utils';
 import NotificationBlock from './NotificationBlock/NotificationBlock';
@@ -13,10 +11,8 @@ import successIcon from '../../images/success-icon.png';
 import failIcon from '../../images/fail-icon.png';
 import connectedIcon from '../../images/connected-icon.png';
 
-export default function(){
-    const [ctx, setCtx] = useContext(Context);
+function Notifications(){
     const [config, setConfig] = useState([]);
-    const [typeTransaction, setTypeTransaction] = useState(null);
     const [costs, setCosts] = useState(0);
     const {account} = useEthers();
     const {notifications} = useNotifications();
@@ -33,21 +29,21 @@ export default function(){
         } else {
             setCosts(config.tokenPrice);
         }
-    }, [typeTransaction, config]);
+    }, [config, onlyWhitelistedFF, onlyWhitelisted, onlyPublicSale]);
 
     useEffect(() => {
-        setTypeTransaction(
-            onlyWhitelistedFF 
-                ? "whitelistedFF"
-                : (onlyWhitelisted ? "whitelisted" : "publicSale")
-        );
-    }, [onlyWhitelistedFF, onlyWhitelisted, onlyPublicSale]);
-
-    useEffect(getData.bind(null, './config.json', setConfig), []);
+        getData('./config.json', setConfig);
+    }, []);
     
-    return typeTransaction ? (
+    return (
         <div className="notification">
-            {notifications.map(nf => (<>
+            {notifications
+                .reduce((nArr, el, id) => {
+                    return !nArr.find(i => i.type === el.type) 
+                        ? [...nArr, el]
+                        : nArr;
+                }, [])
+                .map((nf, id) => (<React.Fragment key={id}>
 
                 {nf.type === 'walletConnected' && (
                     <NotificationBlock
@@ -76,8 +72,19 @@ export default function(){
                         icon={successIcon}
                     />
                 )}
+                {nf.type === "transactionFailed" && (
+                    <NotificationBlock 
+                        title="Transaction Fail"
+                        transaction={`https://rinkeby.etherscan.io/tx/${nf.receipt.transactionHash}`}
+                        id={nf.receipt.transactionIndex}
+                        costs={costs}
+                        icon={failIcon}
+                    />
+                )}
 
-            </>))}
+            </React.Fragment>))}
         </div>
-    ) : null;
+    );
 }
+
+export default Notifications;

@@ -15,7 +15,7 @@ import borderImage from '../../images/border.png';
 import linkIcon from '../../images/link-icon.png';
 import tickIcon from '../../images/tick-icon.png';
 
-export default function({ isActive, delay }){
+function ModalAccount({ isActive, delay }){
     const [ctx, setCtx]                     = useContext(Context);
     const [visibleModal, setVisibleModal]   = useState(isActive);
     const [openClass, setOpenClass]         = useState(isActive);
@@ -43,12 +43,6 @@ export default function({ isActive, delay }){
         closeModal();
     };
 
-    const resizeHandler = () => {
-        if(viewSize !== window.innerWidth){
-            setViewSize(window.innerWidth);
-        }
-    };
-
     useEffect(() => {
         if(!visibleModal && isActive){
             setVisibleModal(true);
@@ -63,13 +57,19 @@ export default function({ isActive, delay }){
                 setVisibleModal(false);
             }, delay);
         }
-    }, [isActive]);
+    }, [isActive, delay, visibleModal]);
 
     useEffect(() => {
+        const resizeHandler = () => {
+            if(viewSize !== window.innerWidth){
+                setViewSize(window.innerWidth);
+            }
+        };
+
         window.addEventListener("resize", resizeHandler);
 
         return () => window.removeEventListener("resize", resizeHandler);
-    }, []);
+    }, [viewSize]);
 
     return visibleModal ? (
         <div 
@@ -107,6 +107,7 @@ export default function({ isActive, delay }){
                                         className="modalaccount__wallet"
                                         href={`https://etherscan.io/address/${account}`} 
                                         target="_blank" 
+                                        rel="noreferrer"
                                     >
                                         <span>{
                                             viewSize < 545 
@@ -142,6 +143,7 @@ export default function({ isActive, delay }){
                                                         href={`https://rinkeby.etherscan.io/tx/${tns.receipt.transactionHash}`} 
                                                         // in production delete "rinkeby" from href-attribute
                                                         target="_blank"
+                                                        rel="noreferrer"
                                                     >
                                                         <span>View on Etherscan</span>
                                                         <img src={linkIcon} alt="link-icon" />
@@ -166,3 +168,5 @@ export default function({ isActive, delay }){
         </div>
     ) : null;
 }
+
+export default ModalAccount;

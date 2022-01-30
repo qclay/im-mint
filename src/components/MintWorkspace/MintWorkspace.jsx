@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import PlusButton from '../PlusButton/PlusButton';
 import classNames from 'classnames';
 import { getData } from "../../javascript/utils";
@@ -6,7 +6,6 @@ import { useEthers } from "@usedapp/core";
 import { useContractMethod } from "../../hooks";
 import { utils } from "ethers";
 import { useOnlyWhitelistedFF, useOnlyWhitelisted, useOnlyPublicSale } from "../../hooks";
-import { Context } from '../../Context';
 import MerkleTree from "merkletreejs";
 import keccak256 from "keccak256";
 import "./mintworkspace.scss";
@@ -15,9 +14,8 @@ import "./mintworkspace.scss";
 import workspaceBackground from '../../images/workspace-background.png';
 import workspaceBackgroundMobile from '../../images/workspace-background@mobile.png';
 
-export default function(){
+function MintWorkspace(){
     const [value, setValue]     = useState(1);
-    const [ctx, setCtx]         = useContext(Context);
     const [config, setConfig]   = useState({
         publicSale: 0,
         whitelist: 0,
@@ -31,7 +29,7 @@ export default function(){
         max_value: 0
     });
 
-    const { account, chainId } = useEthers();
+    const { account } = useEthers();
     const { state: mintStateWhitelistedFF, send: mintWhitelistedFF } = useContractMethod("mintWhitelistedFF");
     const { state: mintStateWhitelisted, send: mintWhitelisted } = useContractMethod("mintWhitelisted");
     const { state: mintStatePublicSale, send: mintPublicSale } = useContractMethod("mintPublicSale");
@@ -112,26 +110,19 @@ export default function(){
         );
     };
 
-    useEffect(async () => {
-        const data = await getData("./config.json");
-        const max_value = onlyPublicSale 
-            ? data.publicSale 
-            : (onlyWhitelisted ? data.whitelistFF : data.whitelist);
-
-        setConfig({
-            ...data,
-            max_value
-        });
-    }, []);
-    
-    useEffect(() => {       
-        setCtx({
-            ...ctx,
-            whitelistedFF: mintStateWhitelistedFF,
-            whitelisted: mintStateWhitelisted,
-            publicSale: mintStatePublicSale
-        });
-    }, [mintStateWhitelistedFF, mintStateWhitelisted, mintStatePublicSale])
+    useEffect(() => {
+        getData("./config.json")
+            .then(data => {
+                const max_value = onlyPublicSale 
+                    ? data.publicSale 
+                    : (onlyWhitelisted ? data.whitelistFF : data.whitelist);
+        
+                setConfig({
+                    ...data,
+                    max_value
+                });
+            });
+    }, [onlyWhitelistedFF, onlyWhitelisted, onlyPublicSale]);
 
     return (
         <div className="mintworkspace">
@@ -178,3 +169,5 @@ export default function(){
         </div>
     );
 }
+
+export default MintWorkspace;

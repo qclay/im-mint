@@ -9,7 +9,7 @@ import "./mintcontent.scss";
 import internetMade from '../../images/internet-made.png';
 import zebra from '../../images/zebra.png';
 
-export default function(){
+function MintContent(){
     const settings = {
         speed: window.innerWidth > 768 ? 150 : 70,
         gradient: false,
@@ -45,3 +45,5 @@ export default function(){
         </div>
     );
 }
+
+export default MintContent;

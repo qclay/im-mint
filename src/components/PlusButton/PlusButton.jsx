@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import "./plusbutton.scss" 
 
-export default function(props){
+function PlusButton(props){
     return (
         <React.Fragment>
             {props.href ? (
@@ -19,3 +19,5 @@ export default function(props){
         </React.Fragment>
     );
 }
+
+export default PlusButton;

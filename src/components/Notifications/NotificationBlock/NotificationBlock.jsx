@@ -7,7 +7,7 @@ import "./notificationblock.scss";
 import linkIcon from '../../../images/link-icon-white.png';
 import classNames from 'classnames';
 
-export default function({ icon, title, transaction, id, costs, className, children }){
+function NotificationBlock({ icon, title, transaction, id, costs, className, children }){
     const {account} = useEthers();
 
     return (
@@ -21,9 +21,10 @@ export default function({ icon, title, transaction, id, costs, className, childr
                 ): (<>
                     <h4 className="notificationblock__title">{title}</h4>
                     <a 
+                        className="notificationblock__link"
                         href={transaction} 
                         target="_blank" 
-                        className="notificationblock__link"
+                        rel="noreferrer"
                     >
                         <span>View on Etherscan</span>
                         <img src={linkIcon} alt="link-icon" />
@@ -38,3 +39,5 @@ export default function({ icon, title, transaction, id, costs, className, childr
         </div>
     );
 }
+
+export default NotificationBlock;

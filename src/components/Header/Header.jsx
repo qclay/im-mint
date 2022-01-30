@@ -1,13 +1,10 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import "./header.scss"
-import { Context } from '../../Context';
 
 // Images
 import logo from '../../images/logo.png';
 
-export default function(){
-    const [ctx, setCtx] = useContext(Context);
-
+function Header(){
     return (
         <header className="header">
             <a href="/" className="header__logo">
@@ -16,3 +13,5 @@ export default function(){
         </header>
     );
 }
+
+export default Header;

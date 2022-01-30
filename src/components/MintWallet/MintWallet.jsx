@@ -10,7 +10,7 @@ import "./mintwallet.scss";
 // Images
 import metamaskIcon from '../../images/metamask-logo.svg';
 
-export default function(){
+function MintWallet(){
     const [ctx, setCtx] = useContext(Context);
     const {account, activateBrowserWallet} = useEthers();
     const etherBalance  = useEtherBalance(account);
@@ -49,3 +49,5 @@ export default function(){
         </div>
     );
 }
+
+export default MintWallet;
