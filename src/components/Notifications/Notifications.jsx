@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useOnlyWhitelistedFF, useOnlyWhitelisted, useOnlyPublicSale } from "../../hooks";
 import { useContext } from 'react';
 import { Context } from '../../Context';
-import { useEthers, useNotifications, getStoredTransactionState, useTransactions } from '@usedapp/core';
+import { useEthers } from '@usedapp/core';
 import { getData } from '../../javascript/utils';
 import NotificationBlock from './NotificationBlock/NotificationBlock';
 import "./notifications.scss"
@@ -16,16 +16,22 @@ export default function(){
     const [ctx, setCtx] = useContext(Context);
     const [config, setConfig] = useState([]);
     const [typeTransaction, setTypeTransaction] = useState(null);
+    const [costs, setCosts] = useState(0);
     const {account} = useEthers();
-    const {transactions} = useTransactions();
-
-    transactions.map(tns => {
-        console.log(getStoredTransactionState(tns))
-    });
 
     const onlyWhitelistedFF = useOnlyWhitelistedFF(account);
     const onlyWhitelisted = useOnlyWhitelisted(account);
     const onlyPublicSale = useOnlyPublicSale(account);
+
+    useEffect(() => {
+        if(onlyWhitelistedFF){
+            setCosts(config.presaleFFTokenPrice);
+        } else if(onlyWhitelisted){
+            setCosts(config.presaleTokenPrice);
+        } else {
+            setCosts(config.tokenPrice);
+        }
+    }, [typeTransaction, config]);
 
     useEffect(() => {
         setTypeTransaction(
@@ -44,7 +50,7 @@ export default function(){
                     title="Transaction Started"
                     transaction={`https://rinkeby.etherscan.io/tx/${ctx[typeTransaction].transaction.hash}`}
                     id={null}
-                    costs="0.15"
+                    costs={costs}
                     icon={clockIcon}
                 />
             )}
@@ -53,14 +59,16 @@ export default function(){
                     title="Transaction Succeeded"
                     transaction={`https://rinkeby.etherscan.io/tx/${ctx[typeTransaction].receipt.transactionHash}`}
                     id={ctx[typeTransaction].receipt.transactionIndex}
-                    costs="0.15"
+                    costs={costs}
                     icon={successIcon}
                 />
             )}
-            {ctx[typeTransaction].status === "Exception" && (
+            {ctx[typeTransaction].status === "Exception" && ctx[typeTransaction].transaction && (
                 <NotificationBlock 
                     title="Transaction Failed"
-                    transaction={`https://rinkeby.etherscan.io/address/${account}`}
+                    id={null}
+                    costs={costs}
+                    transaction={ctx[typeTransaction].transaction.hash}
                     icon={failIcon}
                 />
             )}
