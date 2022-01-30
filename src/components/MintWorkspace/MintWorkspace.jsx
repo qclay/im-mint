@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import {getData} from "../../javascript/utils";
 import PlusButton from '../PlusButton/PlusButton';
 import classNames from 'classnames';
-import "./mintworkspace.scss";
-
+import { getData } from "../../javascript/utils";
 import { useEthers } from "@usedapp/core";
 import { useContractMethod } from "../../hooks";
 import { utils } from "ethers";
 import { useOnlyWhitelistedFF, useOnlyWhitelisted, useOnlyPublicSale } from "../../hooks";
-import {Context} from '../../Context';
+import { Context } from '../../Context';
 import MerkleTree from "merkletreejs";
 import keccak256 from "keccak256";
+import "./mintworkspace.scss";
 
 // Images
 import workspaceBackground from '../../images/workspace-background.png';
