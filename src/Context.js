@@ -1,7 +1,10 @@
 import React from "react";
 
 export const value = {
-    showAccountInfoModal: true
+    showAccountInfoModal: false,
+    whitelistedFF: {},
+    whitelisted: {},
+    publicSale: {}
 };
 
 export const Context = React.createContext({});

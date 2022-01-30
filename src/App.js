@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import Header from "./components/Header/Header";
 import MintContent from './components/MintContent/MintContent';
 import ModalAccount from "./components/ModalAccount/ModalAccount";
+import { Helmet } from "react-helmet";
 import { Context, value } from './Context';
 
 // Images
@@ -17,6 +18,9 @@ function App() {
 
   return (
     <Context.Provider value={[ctx, setCtx]}>
+      <Helmet>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+      </Helmet>
       <div className="mint" data-lazy-bg={background}>
         <Header />
         <div className="mint__sidebar">

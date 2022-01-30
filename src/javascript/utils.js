@@ -9,18 +9,20 @@ export const getData = async (url, func) => {
     return json;
 };
 
-export const hideWallet = (wallet) => {
-    const length = wallet.length;
+export const hideWallet = (wallet, options = {}) => {
+    const length = String(wallet).length;
+    const left = options.left || 6;
+    const right = options.right || 4;
 
-    if(length <= 10){
+    if(length <= (left + right)){
         return wallet;
     }
 
     let start = "", end = "";
 
     for(let i = 0; i < length; i++){
-        start += i < 6 ? wallet[i] : "";
-        end += i >= length - 4 ? wallet[i] : "";
+        start += i < left ? wallet[i] : "";
+        end += i >= length - right ? wallet[i] : "";
     }
 
     return start + "..." + end;

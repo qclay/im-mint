@@ -1,12 +1,13 @@
 import React from 'react';
 import Marquee from 'react-fast-marquee';
+import MintWorkspace from '../MintWorkspace/MintWorkspace';
+import MintWallet from '../MintWallet/MintWallet';
+import Notifications from '../Notifications/Notifications';
 import "./mintcontent.scss";
 
 // Images
 import internetMade from '../../images/internet-made.png';
 import zebra from '../../images/zebra.png';
-import MintWorkspace from '../MintWorkspace/MintWorkspace';
-import MintWallet from '../MintWallet/MintWallet';
 
 export default function(){
     const settings = {
@@ -40,6 +41,7 @@ export default function(){
             </div>
             <MintWallet />
             <MintWorkspace />
+            <Notifications />
         </div>
     );
 }

@@ -1,0 +1,23 @@
+.notification{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 400px;
+    width: 100%;
+
+    padding: 27px 37px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 50;
+
+    @media (max-width: 991px){
+        margin-top: 54px;
+        max-width: 100%;    
+        padding: 0 15px;
+        max-width: 339px;
+        position: relative;
+        right: auto;
+        top: auto;  
+    }
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {getData} from "../../javascript/utils";
 import PlusButton from '../PlusButton/PlusButton';
 import classNames from 'classnames';
@@ -8,6 +8,7 @@ import { useEthers } from "@usedapp/core";
 import { useContractMethod } from "../../hooks";
 import { utils } from "ethers";
 import { useOnlyWhitelistedFF, useOnlyWhitelisted, useOnlyPublicSale } from "../../hooks";
+import {Context} from '../../Context';
 import MerkleTree from "merkletreejs";
 import keccak256 from "keccak256";
 
@@ -16,8 +17,9 @@ import workspaceBackground from '../../images/workspace-background.png';
 import workspaceBackgroundMobile from '../../images/workspace-background@mobile.png';
 
 export default function(){
-    const [value, setValue] = useState(1);
-    const [config, setConfig] = useState({
+    const [value, setValue]     = useState(1);
+    const [ctx, setCtx]         = useContext(Context);
+    const [config, setConfig]   = useState({
         publicSale: 0,
         whitelist: 0,
         whitelistFF: 0,
@@ -39,51 +41,63 @@ export default function(){
     const onlyWhitelisted = useOnlyWhitelisted(account);
     const onlyPublicSale = useOnlyPublicSale(account);
 
+    const errorMessage = () => {
+        if (onlyWhitelistedFF && mintStateWhitelistedFF.errorMessage) {
+            return mintStateWhitelistedFF.errorMessage.slice(0, 31) === "err: insufficient funds for gas" 
+                ? "Insufficient funds in current connected Account" 
+                : mintStateWhitelistedFF.errorMessage;
+        }
+        if (onlyWhitelisted && mintStateWhitelisted.errorMessage) {
+            return mintStateWhitelisted.errorMessage.slice(0, 31) === "err: insufficient funds for gas" 
+                ? "Insufficient funds in current connected Account" 
+                : mintStateWhitelisted.errorMessage;
+        }
+        if (onlyPublicSale && mintStatePublicSale.errorMessage) {
+            return mintStatePublicSale.errorMessage.slice(0, 31) === "err: insufficient funds for gas" 
+                ? "Insufficient funds in current connected Account" 
+                : mintStatePublicSale.errorMessage;
+        }
+
+        return null;
+    };
+
     async function handleSetCountMintButtonClick() {
         const _count = parseInt(value);    
 
-        console.log("_count: ", _count);
-        console.log("mintStateWhitelistedFF: ", mintStateWhitelistedFF)
-        console.log("mintStateWhitelisted: ", mintStateWhitelisted)
-        console.log("mintStatePublicSale: ", mintStatePublicSale)
-        console.log("onlyWhitelistedFF: ", onlyWhitelistedFF)
-        console.log("onlyWhitelisted: ", onlyWhitelisted)
-        console.log("onlyPublicSale: ", onlyPublicSale)
-
         if (onlyWhitelistedFF) {
-          //merkle
-          const leafNodes = config.whitelistHashedAddresses.map((leafJson) => Buffer.from(leafJson, "hex"));
-          const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
-          const addr = account
-          const hexProof = merkleTree.getHexProof(keccak256(addr));
-    
-          if (_count) {
-            mintWhitelistedFF(_count, hexProof, {
-              value: utils.parseEther((config.presaleFFTokenPrice * value).toString()),
-            }); //calling the mint here! arguments and a config object at end for value wow read comments here https://dev.to/jacobedawson/send-react-web3-dapp-transactions-via-metamask-2b8n
-          }
+            //merkle
+            const leafNodes = config.whitelistHashedAddresses.map((leafJson) => Buffer.from(leafJson, "hex"));
+            const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
+            const addr = account
+            const hexProof = merkleTree.getHexProof(keccak256(addr));
+      
+            if (_count) {
+              mintWhitelistedFF(_count, hexProof, {
+                value: utils.parseEther((config.presaleFFTokenPrice * value).toString()),
+              }); //calling the mint here! arguments and a config object at end for value wow read comments here https://dev.to/jacobedawson/send-react-web3-dapp-transactions-via-metamask-2b8n
+            }
         }
-    
+      
         if (onlyWhitelisted) {
-          //merkle
-          const leafNodes = config.whitelistHashedAddresses.map((leafJson) => Buffer.from(leafJson, "hex"));
-          const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
-          const addr = account
-          const hexProof = merkleTree.getHexProof(keccak256(addr));
-    
-          if (_count) {
-            mintWhitelisted(_count, hexProof, {
-              value: utils.parseEther((config.presaleTokenPrice * value).toString()),
-            }); //calling the mint here! arguments and a config object at end for value wow read comments here https://dev.to/jacobedawson/send-react-web3-dapp-transactions-via-metamask-2b8n
-          }
+            //merkle
+            const leafNodes = config.whitelistHashedAddresses.map((leafJson) => Buffer.from(leafJson, "hex"));
+            const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
+            const addr = account
+            const hexProof = merkleTree.getHexProof(keccak256(addr));
+      
+            if (_count) {
+              mintWhitelisted(_count, hexProof, {
+                value: utils.parseEther((config.presaleTokenPrice * value).toString()),
+              }); //calling the mint here! arguments and a config object at end for value wow read comments here https://dev.to/jacobedawson/send-react-web3-dapp-transactions-via-metamask-2b8n
+            }
         }
-    
+      
         if (onlyPublicSale) {
-          if (_count) {
-            mintPublicSale(_count, {
-              value: utils.parseEther((config.tokenPrice * value).toString()),
-            }); //calling the mint here! arguments and a config object at end for value wow read comments here https://dev.to/jacobedawson/send-react-web3-dapp-transactions-via-metamask-2b8n
-          }
+            if (_count) {
+              mintPublicSale(_count, {
+                value: utils.parseEther((config.tokenPrice * value).toString()),
+              }) //calling the mint here! arguments and a config object at end for value wow read comments here https://dev.to/jacobedawson/send-react-web3-dapp-transactions-via-metamask-2b8n
+            }
         }
     }
 
@@ -105,13 +119,20 @@ export default function(){
             ? data.publicSale 
             : (onlyWhitelisted ? data.whitelistFF : data.whitelist);
 
-        console.log(max_value)
-
         setConfig({
             ...data,
             max_value
         });
     }, []);
+    
+    useEffect(() => {       
+        setCtx({
+            ...ctx,
+            whitelistedFF: mintStateWhitelistedFF,
+            whitelisted: mintStateWhitelisted,
+            publicSale: mintStatePublicSale
+        });
+    }, [mintStateWhitelistedFF, mintStateWhitelisted, mintStatePublicSale])
 
     return (
         <div className="mintworkspace">
@@ -143,9 +164,14 @@ export default function(){
                     >
                         <span>Mint <strong>{value}</strong> intenet made nft!</span>
                     </PlusButton>
-                    {account ? (
-                        <p className="mintworkspace__connect">Connected to Ethereum Mainnet.</p>
-                    ) : (
+                    
+                    {account ? (<>
+                        {errorMessage() ? (
+                            <p className="mintworkspace__connect warning">{errorMessage()}</p>
+                        ) : (
+                            <p className="mintworkspace__connect">Connected to Ethereum Mainnet.</p>
+                        )}
+                    </>) : (
                         <p className="mintworkspace__connect warning">You are NOT connected to Ethereum Mainnet.</p>
                     )}
                 </div>

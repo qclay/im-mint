@@ -1,0 +1,92 @@
+@import "../../../scss/mixins.scss";
+
+.notificationblock{
+    max-width: 310px;
+    width: 100%;
+    min-height: 88px;
+    background: rgba(71, 195, 231, 0.2);
+    border: 2.8162px solid #47C3E7;
+    backdrop-filter: blur(4px);
+    animation: toBottom 0.35s ease forwards;
+    
+    display: flex;
+}
+.notificationblock__img{
+    margin: -1px 0;
+    height: auto;
+    width: 59px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(71, 195, 231, 0.2);
+    backdrop-filter: blur(4px);
+    border-right: 2.8162px solid #47C3E7;
+
+    img{
+        max-width: 24px;
+        max-height: 24px;
+    }
+}
+
+.notificationblock__detail{
+    display: flex;
+    flex-direction: column;
+    padding: 11px 16px 14px;
+}
+.notificationblock__title{
+    @include jakarta(500);
+    font-size: 15px;
+    line-height: 1.2;
+    color: #FFA133;
+
+}
+.notificationblock__link{
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+
+    span{
+        @include jakarta(500);
+        font-size: 15px;
+        line-height: 1.2;
+        color: #fff;
+    }
+    img{
+        transform: translateY(1px);
+        margin-left: 6px;
+        max-width: 14px;
+        max-height: 14px;
+    }
+}
+.notificationblock__info{
+    margin-top: 7px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+
+    @include jakarta(500);
+    font-size: 13px;
+
+    .ntb-wallet{
+        color: #fff;
+    }
+    .ntb-id{
+        color: rgba(#fff, .5);
+        margin-left: 8px;
+    }
+    .ntb-eth{
+        margin-left: 3px;
+        color: #fff;
+    }
+}
+
+@keyframes toBottom {
+    0%{
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100%{
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
